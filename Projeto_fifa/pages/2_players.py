@@ -20,7 +20,7 @@ df_players = df_data[(df_data["Club"] == club)]
 # Lista de valores da coluna Name filtrado pelo club
 players = df_players["Name"].unique()
 # Adicionando filtro com os valores da coluna name
-player = st.sidebar.selectbox("Clube", players)
+player = st.sidebar.selectbox("Jogador", players)
 
 # Filtrando a linha com o valor da coluna name selecionado
 player_stats = df_data[df_data["Name"] == player].iloc[0]
@@ -51,7 +51,28 @@ st.progress(int(player_stats["Overall"]))
 col1, col2, col3, col4 = st.columns(4)
 
 # Adicionando metricas com descricao e valor
-col1.metric(label="Valor de mercado", value=f"£ { player_stats['Value(£)']:,}")
-col2.metric(label="Remuneração semanal", value=f"£ { player_stats['Wage(£)']:,}")
-col3.metric(label="Cláusula de recisão", value=f"£ { player_stats['Release Clause(£)']:,}")
+col1.metric(label="Valor de mercado", value=f"£ {player_stats['Value(£)']:,}")
+col2.metric(label="Remuneração semanal",
+            value=f"£ {player_stats['Wage(£)']:,}")
+col3.metric(label="Cláusula de recisão", value=f"£ {
+            player_stats['Release Clause(£)']:,}"
+            )
 
+# Adicionando divisor na visualizacao web
+st.divider()
+
+# Adicionando colunas na visualizacao web
+col1, col2, col3 = st.columns(3)
+
+maximo_valor_mercado = df_data[df_data["Club"] == club]['Value(£)'].sum()
+remuneracao_mediana = df_data[df_data["Club"] == club]['Wage(£)'].mean()
+clausula_maxima = df_data[df_data["Club"] == club]['Release Clause(£)'].max()
+
+# Alterando formato
+maximo_valor_mercado = f"£ {maximo_valor_mercado:,}"
+remuneracao_mediana = f"£  {round(remuneracao_mediana, 2):,}"
+clausula_maxima = f"£  {clausula_maxima:,}"
+
+col1.metric("Valor de mercado do elenco:", maximo_valor_mercado)
+col2.metric("Média de remuneração no clube:", remuneracao_mediana)
+col3.metric("Maior clausula do clube:", clausula_maxima)
